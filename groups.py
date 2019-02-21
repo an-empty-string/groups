@@ -187,11 +187,26 @@ class Group:
             }) for permutation in itertools.permutations(range(n))
         ]
 
+        def cycle(group, c):
+            full_range = set(range(n))
+            not_changed = full_range.difference(set(c))
+
+            d = {i: i for i in not_changed}
+            d[c[-1]] = c[0]
+            d.update({
+                c[i]: c[i + 1] for i in range(len(c) - 1)
+            })
+
+            return group[
+                Function(permutes, permutes, d)
+            ]
+
         return type("SymmetricGroup", (Group,), {
             "name": "S{}".format(n),
             "_elements": set(all_permutation),
             "_identity": all_permutation[0],
-            "operation": operation
+            "operation": operation,
+            "cycle": cycle,
         })()
 
     @classmethod
